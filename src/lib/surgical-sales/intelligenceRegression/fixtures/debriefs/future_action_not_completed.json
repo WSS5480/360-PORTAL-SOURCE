@@ -1,0 +1,14 @@
+{
+  "name": "future_action_not_completed",
+  "note": "Debrief after meeting with Dr. Plum. We discussed CurvaFlow and he asked for clinical data. No evaluation has happened yet. He said the next step is to schedule a future case where he can see it in action. Send the paper and follow up with the coordinator next week.",
+  "mustContain": [
+    "Product interest: Curvaflow",
+    "Schedule a future case",
+    "Follow up the coordinator"
+  ],
+  "mustNotContain": [
+    "CurvaFlow was used",
+    "evaluation completed",
+    "completed action"
+  ]
+}

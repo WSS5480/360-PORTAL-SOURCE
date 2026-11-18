@@ -1,0 +1,14 @@
+{
+  "name": "staff_training_needed",
+  "note": "Product support case with Dr. Chive. The circulator was unfamiliar with the new tray layout and setup took extra time. No device failure occurred. The team requested a quick in-service before the next case. Follow up with the OR manager to schedule training.",
+  "mustContain": [
+    "Training or familiarity issue",
+    "The team requested a quick in-service",
+    "Follow up with the OR manager"
+  ],
+  "mustNotContain": [
+    "device failure",
+    "OR manager decision maker",
+    "The — Circulator"
+  ]
+}

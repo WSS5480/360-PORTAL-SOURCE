@@ -1,0 +1,193 @@
+.unified-activity-feed {
+  display: grid;
+  gap: 0;
+  background: var(--surface, #fff);
+  min-width: 0;
+}
+.unified-activity-feed-head {
+  padding: 8px 12px 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 6%, var(--border));
+}
+.unified-activity-feed-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.unified-activity-feed-filters {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 8px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 6%, var(--border));
+  scrollbar-width: none;
+}
+.unified-activity-feed-filters::-webkit-scrollbar {
+  display: none;
+}
+.unified-activity-feed-filter {
+  flex: 0 0 auto;
+  min-height: 44px;
+  /* Short labels ("AI") still need a full-width thumb target. */
+  min-width: 44px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 10%, var(--border));
+  background: #fff;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.unified-activity-feed-filter[aria-pressed="true"] {
+  border-color: var(--brand-600);
+  background: var(--brand-600);
+  color: #fff;
+}
+.unified-activity-feed-toolbar {
+  padding: 8px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 6%, var(--border));
+  display: grid;
+  gap: 8px;
+}
+.unified-activity-feed-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.unified-activity-feed-item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px;
+  position: relative;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 5%, var(--border));
+}
+.unified-activity-feed-rail {
+  position: absolute;
+  left: 25px;
+  top: 36px;
+  bottom: 0;
+  width: 2px;
+  background: color-mix(in srgb, var(--foreground) 8%, var(--border));
+}
+.unified-activity-feed-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  background: color-mix(in srgb, var(--foreground) 6%, var(--surface));
+}
+.unified-activity-feed-icon--ai {
+  background: color-mix(in srgb, #7c3aed 14%, var(--surface));
+}
+.unified-activity-feed-title {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.unified-activity-feed-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.unified-activity-feed-delete {
+  border: none;
+  background: transparent;
+  color: var(--danger, #b42318);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.unified-activity-feed-delete:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.unified-activity-feed-summary {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--foreground) 82%, var(--muted));
+  white-space: pre-wrap;
+}
+.unified-activity-feed-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.unified-activity-feed-meta-chip {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--foreground) 6%, var(--surface));
+  color: var(--muted);
+}
+.unified-activity-feed-foot {
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.unified-activity-feed-details {
+  margin-top: 8px;
+}
+.unified-activity-feed-details summary {
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.unified-activity-feed-details pre {
+  margin: 6px 0 0;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 1.4;
+  overflow: auto;
+  max-height: 160px;
+  background: color-mix(in srgb, var(--foreground) 4%, var(--surface));
+}
+.unified-activity-feed-item-actions {
+  margin-top: 6px;
+}
+.unified-activity-feed-item-actions button {
+  min-height: 32px;
+  font-size: 11px !important;
+  padding: 5px 10px !important;
+}
+.unified-activity-feed-empty {
+  padding: 20px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+.unified-activity-feed-caught-up {
+  padding: 10px 12px 14px;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
+.unified-activity-feed-item--pulse {
+  animation: unified-activity-pulse 1.2s ease-out 1;
+}
+@keyframes unified-activity-pulse {
+  0% {
+    background: color-mix(in srgb, var(--brand-600) 12%, transparent);
+  }
+  100% {
+    background: transparent;
+  }
+}

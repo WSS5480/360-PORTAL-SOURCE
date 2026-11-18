@@ -1,0 +1,14 @@
+{
+  "name": "product_question_not_fit",
+  "note": "Debrief from quick hallway conversation with Dr. Radish. He asked whether NovaScope works with their current suction tower and wanted to understand the setup. We did not establish product fit or buying criteria. Next step is to send compatibility details and ask for permission to observe a case.",
+  "mustContain": [
+    "Product interest: Novascope",
+    "Send compatibility details",
+    "Ask for permission to observe a case"
+  ],
+  "mustNotContain": [
+    "NovaScope product fit",
+    "NovaScope was used",
+    "buying criteria established"
+  ]
+}

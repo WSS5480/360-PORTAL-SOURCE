@@ -1,0 +1,463 @@
+@import "tailwindcss";
+
+@keyframes portal-processing-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.portal-processing-spinner {
+  animation: portal-processing-spin 0.85s linear infinite;
+}
+
+/* Surgical CRM — subtle motion (scoped via .surgical-case-motion) */
+.surgical-case-motion button[type="button"]:not(:disabled),
+.surgical-case-motion a[href][data-surgical-press] {
+  transition:
+    transform 0.12s ease,
+    opacity 0.12s ease,
+    filter 0.18s ease,
+    box-shadow 0.18s ease;
+}
+@media (hover: hover) {
+  .surgical-case-motion button[type="button"]:not(:disabled):hover,
+  .surgical-case-motion a[href][data-surgical-press]:hover {
+    filter: brightness(1.05);
+  }
+}
+.surgical-case-motion button[type="button"]:not(:disabled):active,
+.surgical-case-motion a[href][data-surgical-press]:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+@keyframes surgical-case-complete-ring {
+  0% {
+    box-shadow:
+      0 2px 14px color-mix(in srgb, var(--foreground) 5%, transparent),
+      0 0 0 0 color-mix(in srgb, var(--success) 38%, transparent);
+  }
+  100% {
+    box-shadow:
+      0 2px 14px color-mix(in srgb, var(--foreground) 5%, transparent),
+      0 0 0 10px transparent;
+  }
+}
+.surgical-case-complete-flash {
+  animation: surgical-case-complete-ring 0.55s ease-out;
+}
+
+@keyframes surgical-timeline-row-new {
+  0% {
+    background-color: color-mix(in srgb, var(--brand-600) 12%, var(--surface));
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+.surgical-timeline-row--new {
+  animation: surgical-timeline-row-new 1.25s ease-out forwards;
+  border-radius: 10px;
+  margin-left: -6px;
+  margin-right: -6px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.case-detail-surface {
+  transition:
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
+}
+@media (hover: hover) {
+  .case-detail-surface:hover {
+    box-shadow: 0 3px 16px color-mix(in srgb, var(--foreground) 6%, transparent);
+    border-color: color-mix(in srgb, var(--brand-600) 14%, var(--border));
+  }
+}
+
+/* =========================
+   360 Medical Portal Theme
+   Clean • Clinical • Trustworthy
+   ========================= */
+
+:root {
+  /* Brand */
+  --brand-600: #0b7285; /* primary teal */
+  --brand-700: #075c6b; /* hover/active */
+  --brand-050: #e6f6f8; /* soft teal tint */
+
+  /* Neutrals */
+  --background: #f7fafc; /* page background */
+  --foreground: #0f172a; /* main text */
+  --muted: #52647a;      /* secondary text */
+  --surface: #ffffff;    /* cards/panels */
+  --surface-2: #f2f6fa;  /* subtle fills */
+  --border: #d8e1ea;     /* dividers */
+
+  /* Status */
+  --danger: #b42318;
+  --warning: #b54708;
+  --success: #067647;
+
+  /* Radii + Shadows */
+  --radius-sm: 10px;
+  --radius: 12px;
+  --shadow-1: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-2: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+  /* Typography */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+
+  /* Focus ring */
+  --focus: 0 0 0 3px rgba(11, 114, 133, 0.18);
+
+  /* Sales CRM — 360 Medical (surgical tech) */
+  --crm-navy: #0c1929;
+  --crm-navy-soft: #132a42;
+  --crm-cyan: #06b6d4;
+  --crm-cyan-bright: #22d3ee;
+  --crm-card-edge: color-mix(in srgb, var(--crm-navy) 9%, var(--border));
+  --crm-card-shadow: 0 4px 22px color-mix(in srgb, var(--crm-navy) 7%, transparent),
+    0 1px 0 color-mix(in srgb, var(--foreground) 4%, transparent);
+  --crm-surface-elevated: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--brand-600) 6%, var(--surface)) 0%,
+    var(--surface) 42%,
+    color-mix(in srgb, var(--crm-cyan-bright) 5%, var(--surface)) 100%
+  );
+  --crm-ribbon: linear-gradient(
+    90deg,
+    var(--crm-navy-soft) 0%,
+    color-mix(in srgb, var(--brand-600) 75%, var(--crm-navy-soft)) 42%,
+    #2dd4bf 100%
+  );
+}
+
+/* Portal is a light product. OS dark mode must not remap text/surface tokens,
+   or variable-based copy becomes near-white on hardcoded white cards. */
+html {
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: var(--text-base);
+  line-height: 1.45;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  background: var(--surface);
+  color: var(--foreground);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: color-mix(in srgb, var(--brand-600) 55%, var(--border));
+  box-shadow: var(--focus);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+::selection {
+  background: var(--brand-050);
+}
+
+/* Optional utilities you can use in components */
+.surface {
+  background: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+}
+
+.surface-muted {
+  background: var(--surface-2);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: var(--radius);
+}
+/* Portal mobile menu button - hidden on desktop */
+.portal-mobile-menu-btn {
+  display: none;
+}
+
+/* =========================
+   Portal mobile-friendly styles
+   Only apply below 900px - desktop layout unchanged
+   ========================= */
+@media (max-width: 900px) {
+  .portal-shell {
+    flex-direction: column !important;
+    position: relative;
+  }
+
+  /* Mobile menu — ghost icon; fixed variant for list pages without inline header */
+  .portal-mobile-menu-btn--ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    max-width: 44px;
+    max-height: 44px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: color-mix(in srgb, var(--foreground) 72%, transparent);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .portal-mobile-menu-btn--ghost:active {
+    background: color-mix(in srgb, var(--foreground) 6%, transparent);
+  }
+  .portal-mobile-menu-btn--fixed {
+    display: flex !important;
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 1001;
+  }
+  .portal-mobile-menu-btn:not(.portal-mobile-menu-btn--ghost) {
+    display: none !important;
+  }
+
+  /* Overlay - only on mobile when menu open */
+  .portal-sidebar-overlay {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .portal-sidebar-overlay.portal-overlay-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Sidebar - drawer on mobile, hidden by default */
+  .portal-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: min(320px, 85vw) !important;
+    height: 100vh !important;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-right: 1px solid var(--border) !important;
+    border-bottom: 0 !important;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0);
+  }
+  .portal-sidebar.portal-sidebar-open {
+    transform: translateX(0);
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .portal-contentWrap {
+    padding: 18px 18px 18px 18px !important;
+    padding-top: 56px !important;
+  }
+  .portal-contentWrap:has(.provider-workspace-page),
+  .portal-contentWrap:has(.org-workspace-page),
+  .portal-contentWrap:has(.case-workspace-page),
+  .portal-contentWrap:has(.engagement-detail-mobile),
+  .portal-contentWrap:has(.prepare-for-meeting-page),
+  .portal-contentWrap:has(.create-provider-root),
+  .portal-contentWrap:has(.create-engagement-root),
+  .portal-contentWrap:has(.create-case-native-root),
+  .portal-contentWrap:has(.sc-native-page),
+  .portal-contentWrap:has(.sales-cmd-native-wrap),
+  .portal-contentWrap:has(.crm-sales-page-bg) {
+    padding-top: 0 !important;
+  }
+
+  /* Sales Command pages use inline menu in page chrome — never the fixed shortcut */
+  body:has(.crm-sales-page-bg) .portal-mobile-menu-btn--fixed,
+  body:has(.provider-workspace-page) .portal-mobile-menu-btn--fixed,
+  body:has(.org-workspace-page) .portal-mobile-menu-btn--fixed,
+  body:has(.case-workspace-page) .portal-mobile-menu-btn--fixed,
+  body:has(.engagement-detail-mobile) .portal-mobile-menu-btn--fixed,
+  body:has(.prepare-for-meeting-page) .portal-mobile-menu-btn--fixed,
+  body:has(.create-provider-root) .portal-mobile-menu-btn--fixed,
+  body:has(.create-engagement-root) .portal-mobile-menu-btn--fixed,
+  body:has(.create-case-native-root) .portal-mobile-menu-btn--fixed,
+  body:has(.sc-native-page) .portal-mobile-menu-btn--fixed,
+  body:has(.sales-cmd-native-wrap) .portal-mobile-menu-btn--fixed,
+  body:has(.lb-page) .portal-mobile-menu-btn--fixed,
+  body:has(.sales-contact-detail-root) .portal-mobile-menu-btn--fixed,
+  body:has(.opp-mobile-chrome) .portal-mobile-menu-btn--fixed {
+    display: none !important;
+  }
+
+  .portal-main:has(.case-workspace-page) {
+    overflow-x: clip;
+    min-width: 0;
+  }
+
+  .portal-contentWrap:has(.case-workspace-page) {
+    padding: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .portal-content:has(.case-workspace-page) {
+    gap: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Hero stats - smaller minmax so more wrap on narrow screens */
+  .portal-hero-stats {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
+  }
+
+  /* Tables - ensure horizontal scroll on mobile */
+  .portal-table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Search/filter inputs full width on mobile */
+  .portal-search-full-mobile input[type="text"],
+  .portal-search-full-mobile input[type="search"] {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Controls stack on mobile */
+  .portal-controls-stack {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  /* Order/invoice detail header stacks on mobile */
+  .portal-detail-header {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Touch-friendly: ensure tap targets are at least 44px */
+  .portal-tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Order timeline: vertical stack on mobile instead of cramped horizontal grid */
+  .portal-order-timeline-steps {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    grid-template-columns: unset !important;
+    padding-top: 0 !important;
+  }
+  .portal-order-timeline-line-h {
+    display: none !important;
+  }
+  .portal-order-timeline-steps::before {
+    content: "";
+    position: absolute;
+    left: 21px;
+    top: 14px;
+    bottom: 14px;
+    width: 2px;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 1px;
+    z-index: 1;
+  }
+  .portal-order-timeline-step {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-items: flex-start !important;
+    text-align: left !important;
+    gap: 14px !important;
+    min-height: unset !important;
+    padding: 12px 0 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  }
+  .portal-order-timeline-step:last-child {
+    border-bottom: none !important;
+  }
+  .portal-order-timeline-step > div:first-child {
+    flex-shrink: 0;
+  }
+  .portal-order-timeline-step > div:nth-child(2) {
+    flex: 1;
+    min-width: 0;
+  }
+  .portal-order-timeline-step > div:nth-child(3) {
+    flex-shrink: 0;
+    margin-top: 0 !important;
+  }
+}
+@media (min-width: 901px) {
+  .portal-mobile-menu-btn {
+    display: none !important;
+  }
+  .portal-sidebar-overlay {
+    display: none !important;
+  }
+}
+
+/* Admin accounts list: row hover aligned with brand teal */
+.admin-accounts-table tbody tr:hover td,
+.admin-data-table tbody tr:hover td {
+  background: rgba(11, 114, 133, 0.05);
+}

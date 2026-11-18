@@ -1,0 +1,20 @@
+{
+  "name": "colorectal_interest_readiness_context",
+  "note": "Robotic colorectal case. Current setup looked pretty standardized. No major issues during most of the procedure. During cleanup, Dr. Lettuce mentioned pooled fluid can sometimes be difficult to reach in deeper anatomy. Assistant said they occasionally switch between different suction devices depending on the case. Dr. Lettuce asked whether ACSIS works with their existing equipment and whether there is much training required for staff. He wasn't evaluating anything today but wanted more information. OR manager stopped by briefly and asked me to send product information before discussing any future evaluations. No commitments made. Need to send information to the OR manager and follow up in a few weeks.",
+  "mustContain": [
+    "Current setup: standardized setup",
+    "Difficulty reaching pooled fluid",
+    "ACSIS interest",
+    "training required for staff",
+    "OR Manager",
+    "send product information",
+    "Follow up in a few weeks"
+  ],
+  "mustNotContain": [
+    "ACSIS was used",
+    "ACSIS evaluated",
+    "Training or familiarity issue",
+    "OR Manager — Scheduling Coordinator",
+    "Colorectal"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "acsis_interest_not_usage",
+  "note": "Observation with Dr. Lettuce today. Robotic ventral hernia repair. Currently using standard rigid suction irrigation. Had a few moments where access was difficult in tighter anatomy and the assistant had to reposition several times. Dr. Lettuce mentioned visualization can be challenging in deeper portions of the case. Asked a few questions about ACSIS and how it compares to what they're using now. Didn't make any commitments but seemed interested. Suggested we get ACSIS into a future case so he can see it in action. Follow up with Jennifer and identify an appropriate evaluation case.",
+  "mustContain": [
+    "standard rigid suction irrigation",
+    "Access difficulty",
+    "Visualization was challenging",
+    "Provider open to continued discussion",
+    "Follow up with Jennifer"
+  ],
+  "mustNotContain": [
+    "ACSIS was used",
+    "ACSIS used during procedure",
+    "ACSIS evaluated during procedure"
+  ]
+}

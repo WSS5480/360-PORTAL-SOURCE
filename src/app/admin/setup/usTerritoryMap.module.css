@@ -1,0 +1,148 @@
+.root {
+  display: grid;
+  gap: 12px;
+}
+
+.mapFrame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: linear-gradient(165deg, #eef3f8 0%, #dce6f0 55%, #d0dce8 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 1px 2px rgba(15, 23, 42, 0.04);
+  touch-action: none;
+}
+
+.mapSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: grab;
+}
+
+.mapSvg:active {
+  cursor: grabbing;
+}
+
+.mapSurface {
+  fill: transparent;
+}
+
+.mapControls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+}
+
+.mapControlBtn {
+  min-width: 34px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.mapControlBtn:hover:not(:disabled) {
+  background: #fff;
+  border-color: rgba(15, 23, 42, 0.16);
+}
+
+.mapControlBtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.mapHint {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 2;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.state {
+  transition:
+    fill 120ms ease,
+    stroke 120ms ease,
+    stroke-width 120ms ease,
+    filter 120ms ease;
+}
+
+.stateInteractive {
+  cursor: pointer;
+}
+
+.stateInteractive:active {
+  cursor: grabbing;
+}
+
+.stateLabel {
+  pointer-events: none;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  fill: rgba(15, 23, 42, 0.72);
+  user-select: none;
+}
+
+.stateLabelOnDark {
+  fill: rgba(255, 255, 255, 0.92);
+}
+
+.hoverBadge {
+  pointer-events: none;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.detail {
+  font-size: 13px;
+  font-weight: 800;
+  color: #475569;
+  min-height: 18px;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legendLabel {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+.legendSwatch {
+  width: 18px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}

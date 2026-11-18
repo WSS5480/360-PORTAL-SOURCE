@@ -1,0 +1,86 @@
+/**
+ * Canonical activity event types for the unified activity system.
+ * Legacy tables may use snake_case strings; adapters map both directions.
+ */
+
+export const ACTIVITY_EVENT_TYPES = [
+  "NOTE_ADDED",
+  "WORKFLOW_FIELD_UPDATED",
+  "WORKFLOW_STAGE_COMPLETED",
+  "CASE_CREATED",
+  "CASE_STATUS_CHANGED",
+  "CASE_LINKED",
+  "PROVIDER_CREATED",
+  "PROVIDER_UPDATED",
+  "PROVIDER_PLANNING_UPDATED",
+  "PROVIDER_INTELLIGENCE_UPDATED",
+  "PRE_CALL_PLAN_CREATED",
+  "PRE_CALL_PLAN_UPDATED",
+  "PRE_CALL_PLAN_COMPLETED",
+  "ENGAGEMENT_CREATED",
+  "ENGAGEMENT_UPDATED",
+  "ENGAGEMENT_COMPLETED",
+  "ENGAGEMENT_CONVERTED_TO_CASE",
+  "PLANNING_SECTION_COMPLETED",
+  "OPPORTUNITY_CREATED",
+  "OPPORTUNITY_STAGE_CHANGED",
+  "OPPORTUNITY_WON",
+  "OPPORTUNITY_LOST",
+  "ORGANIZATION_LINKED",
+  "ENGAGEMENT_LINKED",
+  "EVALUATION_PLANNED",
+  "EVALUATION_ACTIVE",
+  "PREFERENCE_CARD_PROGRESS_UPDATED",
+  "PROVIDER_LINKED",
+  "PRODUCT_ADDED",
+  "DOCUMENT_UPLOADED",
+  "TASK_CREATED",
+  "TASK_COMPLETED",
+  "AI_INTELLIGENCE_CAPTURED",
+  "OUTCOME_UPDATE_LOGGED",
+  "PRODUCT_USE_LOGGED",
+] as const;
+
+export type ActivityEventType = (typeof ACTIVITY_EVENT_TYPES)[number];
+
+export const ACTIVITY_EVENT_TYPE_LABELS: Record<ActivityEventType, string> = {
+  NOTE_ADDED: "Note added",
+  WORKFLOW_FIELD_UPDATED: "Workflow updated",
+  WORKFLOW_STAGE_COMPLETED: "Workflow stage completed",
+  CASE_CREATED: "Case created",
+  CASE_STATUS_CHANGED: "Case status changed",
+  CASE_LINKED: "Case linked to related opportunity",
+  PROVIDER_CREATED: "Provider created",
+  PROVIDER_UPDATED: "Provider updated",
+  PROVIDER_PLANNING_UPDATED: "Provider planning updated",
+  PROVIDER_INTELLIGENCE_UPDATED: "Provider intelligence updated",
+  PRE_CALL_PLAN_CREATED: "Pre-Call Plan created",
+  PRE_CALL_PLAN_UPDATED: "Pre-Call Plan updated",
+  PRE_CALL_PLAN_COMPLETED: "Pre-Call Plan completed",
+  ENGAGEMENT_CREATED: "Engagement created",
+  ENGAGEMENT_UPDATED: "Engagement updated",
+  ENGAGEMENT_COMPLETED: "Engagement completed",
+  ENGAGEMENT_CONVERTED_TO_CASE: "Engagement converted to case",
+  PLANNING_SECTION_COMPLETED: "Planning section completed",
+  OPPORTUNITY_CREATED: "Provider added to Opportunities",
+  OPPORTUNITY_STAGE_CHANGED: "Evaluation stage changed",
+  OPPORTUNITY_WON: "Evaluation won",
+  OPPORTUNITY_LOST: "Evaluation lost",
+  ORGANIZATION_LINKED: "Organization linked to evaluation",
+  ENGAGEMENT_LINKED: "Engagement linked to evaluation",
+  EVALUATION_PLANNED: "Evaluation planned",
+  EVALUATION_ACTIVE: "Evaluation active",
+  PREFERENCE_CARD_PROGRESS_UPDATED: "Preference card progress updated",
+  PROVIDER_LINKED: "Provider linked to evaluation",
+  PRODUCT_ADDED: "Product added",
+  DOCUMENT_UPLOADED: "Document uploaded",
+  TASK_CREATED: "Task created",
+  TASK_COMPLETED: "Task completed",
+  AI_INTELLIGENCE_CAPTURED: "AI intelligence captured",
+  OUTCOME_UPDATE_LOGGED: "Outcome update logged",
+  PRODUCT_USE_LOGGED: "Product use logged",
+};
+
+export function isActivityEventType(raw: string): raw is ActivityEventType {
+  return (ACTIVITY_EVENT_TYPES as readonly string[]).includes(raw);
+}

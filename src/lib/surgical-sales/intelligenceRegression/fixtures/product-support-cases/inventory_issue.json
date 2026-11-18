@@ -1,0 +1,13 @@
+{
+  "name": "inventory_issue",
+  "note": "Product support case with Dr. Basil. The requested large backup sizes were not available when the case started, causing a delay while the team checked another room. The surgeon used the standard tray after waiting. Follow up with materials management to confirm par levels before the next case.",
+  "mustContain": [
+    "Inventory or availability issue",
+    "requested large backup sizes were not available",
+    "Follow up with materials management"
+  ],
+  "mustNotContain": [
+    "requested large backup sizes were used",
+    "materials management decision maker"
+  ]
+}

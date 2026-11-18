@@ -1,0 +1,12 @@
+{
+  "name": "procedure_not_workflow",
+  "note": "Observation with Dr. Sage today. Robotic ventral hernia repair. The procedure itself was routine. Visualization became difficult in deeper portions of the case and the assistant repositioned twice. No product commitments were made.",
+  "mustContain": [
+    "Visualization",
+    "Routine or smooth case progression"
+  ],
+  "mustNotContain": [
+    "Robotic ventral hernia repair",
+    "procedure focus"
+  ]
+}

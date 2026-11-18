@@ -1,0 +1,15 @@
+{
+  "name": "workflow_friction_debrief",
+  "note": "Debrief with Dr. Kale after two cases. He said access in deep anatomy is difficult and the team loses time repositioning suction. Currently using standard rigid suction. He asked whether a curved option could reduce instrument conflict. Follow up by arranging observation of the next pelvic case.",
+  "mustContain": [
+    "standard rigid suction",
+    "Access difficulty noted in deep anatomy",
+    "Repositioning was needed",
+    "Product interest: curved option",
+    "Follow up arranging observation"
+  ],
+  "mustNotContain": [
+    "curved option was used",
+    "curved option evaluated"
+  ]
+}

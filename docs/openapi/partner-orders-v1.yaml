@@ -1,0 +1,655 @@
+openapi: 3.0.3
+info:
+  title: 360 Medical Partner Order API
+  version: 1.0.0
+  description: |
+    Submit an approved order to 360 Medical. 360 prices the order from the mapped
+    account and creates it as CONFIRMED. The partner order number is stored separately
+    from the generated 360 order number and is the identifier for any later callback.
+
+    Authentication is a partner-scoped bearer key. A partner can read only orders it submitted.
+    Production credentials are not activated in this release. Sandbox base URL is issued
+    from the admin Integrations screen.
+
+    Insufficient inventory is rejected with 422. There is no backorder hold. Inventory is
+    decremented only when 360 staff lock the confirmed order.
+
+    360 calls the partner callback base URL after fulfillment. Those operations are tagged
+    Callbacks. The partner implements them. 360 is the caller and sends the outbound bearer
+    token saved for that partner. Payment-link and payment callbacks are sent only after the
+    invoice callback for that order has returned HTTP 200. The shipment callback does not
+    wait for the invoice callback. One tracking number is sent per order.
+servers:
+  - url: https://sandbox.example.invalid
+    description: Replace with the sandbox base URL issued for the partner.
+security:
+  - bearerAuth: []
+tags:
+  - name: Orders
+  - name: Callbacks
+    description: Implemented by the partner at callback_base_url. 360 sends them.
+paths:
+  /api/integrations/v1/orders:
+    post:
+      tags: [Orders]
+      operationId: createPartnerOrder
+      summary: Create or replay an approved order
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+            examples:
+              approvedOrder:
+                summary: Approved catalog order
+                value:
+                  partner_order_number: ORD-1001
+                  partner_account_ref: fixture-clinic
+                  contact:
+                    name: Example Buyer
+                    email: buyer@example.com
+                  billing_address:
+                    company: Example Clinic
+                    attn: Accounts Payable
+                    line1: 100 Example Ave
+                    line2: null
+                    city: Austin
+                    state: TX
+                    postal: "78701"
+                    country: US
+                    phone: null
+                    email: ap@example.com
+                  shipping_address:
+                    company: Example Clinic
+                    attn: Receiving
+                    line1: 100 Example Ave
+                    line2: null
+                    city: Austin
+                    state: TX
+                    postal: "78701"
+                    country: US
+                    phone: null
+                    email: null
+                  shipping_priority: GROUND
+                  lines:
+                    - sku: FIXTURE-SKU
+                      quantity: 2
+      responses:
+        "200":
+          description: Order created, or an identical retry was recognized.
+          headers:
+            X-Request-Id:
+              $ref: "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+              examples:
+                created:
+                  value:
+                    ok: true
+                    idempotent_replay: false
+                    request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+                    order:
+                      id: 11111111-1111-4111-8111-111111111111
+                      order_number: ORD-20261020-AB12CD
+                      partner_order_number: ORD-1001
+                      status: CONFIRMED
+                      currency: USD
+                      subtotal: 90
+                      shipping_total: 0
+                      total: 90
+                      lines:
+                        - sku: FIXTURE-SKU
+                          product_variant_id: dddddddd-dddd-4ddd-8ddd-dddddddddddd
+                          quantity: 2
+                          unit_price: 50
+                          discount_percent: 10
+                          line_total: 90
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /api/integrations/v1/orders/{partner_order_number}:
+    get:
+      tags: [Orders]
+      operationId: getPartnerOrder
+      summary: Read an order this partner submitted
+      parameters:
+        - $ref: "#/components/parameters/PartnerOrderNumber"
+      responses:
+        "200":
+          description: Order owned by the authenticated partner.
+          headers:
+            X-Request-Id:
+              $ref: "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+              example:
+                ok: true
+                idempotent_replay: false
+                request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+                order:
+                  id: 11111111-1111-4111-8111-111111111111
+                  order_number: ORD-20261020-AB12CD
+                  partner_order_number: ORD-1001
+                  status: CONFIRMED
+                  currency: USD
+                  subtotal: 90
+                  shipping_total: 0
+                  total: 90
+                  lines:
+                    - sku: FIXTURE-SKU
+                      product_variant_id: dddddddd-dddd-4ddd-8ddd-dddddddddddd
+                      quantity: 2
+                      unit_price: 50
+                      discount_percent: 10
+                      line_total: 90
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+  /api/integrations/v1/orders/{partner_order_number}/invoice:
+    patch:
+      tags: [Callbacks]
+      servers:
+        - url: https://partner-callback.example.invalid
+          description: Partner callback_base_url. Replace with the HTTPS URL saved for the sandbox partner.
+      operationId: receiveInvoiceCallback
+      summary: Receive the final invoice total
+      description: |
+        360 sends this after the primary invoice is issued, fulfillment is closed, freight is included
+        in that invoice, and the invoice total matches the order total. A shipping-supplement invoice
+        blocks this callback. Amounts are US dollars.
+      security:
+        - callbackBearer: []
+      parameters:
+        - $ref: "#/components/parameters/PartnerOrderNumber"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceCallback"
+            example:
+              invoice_number: INV-1001
+              final_total: 95
+              invoiced_at: "2026-10-21T16:30:00.000Z"
+      responses:
+        "200":
+          description: Accepted. 360 will not retry this payload.
+        "409":
+          description: Terminal conflict. 360 does not retry.
+        "422":
+          description: Terminal rejection. 360 does not retry.
+        "401":
+          description: Retryable. 360 retries with backoff.
+        "500":
+          description: Retryable. 360 retries with backoff.
+  /api/integrations/v1/orders/{partner_order_number}/shipment:
+    patch:
+      tags: [Callbacks]
+      servers:
+        - url: https://partner-callback.example.invalid
+          description: Partner callback_base_url.
+      operationId: receiveShipmentCallback
+      summary: Receive the single shipment record
+      description: |
+        360 sends the earliest closed fulfillment that has a tracking number. A second tracking
+        number for the same order is not sent. This callback is not held for the invoice callback.
+      security:
+        - callbackBearer: []
+      parameters:
+        - $ref: "#/components/parameters/PartnerOrderNumber"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShipmentCallback"
+            example:
+              tracking_number: 1Z999AA10123456784
+              ship_via: FedEx
+              shipped_at: "2026-10-21T18:00:00.000Z"
+      responses:
+        "200":
+          description: Accepted.
+        "409":
+          description: Terminal conflict, including a conflicting second tracking value. 360 does not retry.
+        "422":
+          description: Terminal rejection. 360 does not retry.
+  /api/integrations/v1/orders/{partner_order_number}/payment-link:
+    patch:
+      tags: [Callbacks]
+      servers:
+        - url: https://partner-callback.example.invalid
+          description: Partner callback_base_url.
+      operationId: receivePaymentLinkCallback
+      summary: Receive the Stripe Checkout URL for the outstanding balance
+      description: |
+        Sent only after the invoice callback for this order has returned HTTP 200.
+        The URL is HTTPS and points at the outstanding balance, with a minimum of 50 cents.
+        A later partial payment replaces this URL with one for the remaining balance.
+        The body contains the URL only. It does not contain card data.
+      security:
+        - callbackBearer: []
+      parameters:
+        - $ref: "#/components/parameters/PartnerOrderNumber"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentLinkCallback"
+            example:
+              payment_link_url: https://checkout.stripe.com/c/pay/cs_test_example
+      responses:
+        "200":
+          description: Accepted.
+        "409":
+          description: Terminal conflict. 360 does not retry.
+        "422":
+          description: Terminal rejection. 360 does not retry.
+  /api/integrations/v1/orders/{partner_order_number}/payments/{external_payment_id}:
+    put:
+      tags: [Callbacks]
+      servers:
+        - url: https://partner-callback.example.invalid
+          description: Partner callback_base_url.
+      operationId: receivePaymentReceiptCallback
+      summary: Receive one captured payment
+      description: |
+        Sent only after the invoice callback for this order has returned HTTP 200.
+        external_payment_id is the Stripe PaymentIntent id and does not change if the receipt is retried.
+        amount is US dollars. A partial payment and a later payment are separate PUTs.
+        Card numbers, CVV, and bank details are never included.
+      security:
+        - callbackBearer: []
+      parameters:
+        - $ref: "#/components/parameters/PartnerOrderNumber"
+        - in: path
+          name: external_payment_id
+          required: true
+          schema:
+            type: string
+          description: Stripe PaymentIntent id for this capture.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentReceiptCallback"
+            example:
+              amount: 40
+              payment_date: "2026-10-21"
+              payment_method: credit_card
+              confirmation_code: ch_example
+      responses:
+        "200":
+          description: Accepted. A retry of the same payment id is idempotent.
+        "409":
+          description: Terminal conflict. 360 does not retry.
+        "422":
+          description: Terminal rejection. 360 does not retry.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Sandbox partner key issued from 360 Admin → Integrations. The partner sends it as Authorization Bearer on order requests.
+    callbackBearer:
+      type: http
+      scheme: bearer
+      description: Token issued by the partner and saved by 360. 360 sends it as Authorization Bearer on callbacks.
+  parameters:
+    IdempotencyKey:
+      in: header
+      name: Idempotency-Key
+      required: false
+      schema:
+        type: string
+        maxLength: 128
+      description: Defaults to partner_order_number. Reuse it unchanged when retrying the same submission.
+    PartnerOrderNumber:
+      in: path
+      name: partner_order_number
+      required: true
+      schema:
+        type: string
+        maxLength: 64
+      description: Immutable partner order number, not the 360 order number.
+  headers:
+    RequestId:
+      description: Correlation id for support and the admin request log.
+      schema:
+        type: string
+        format: uuid
+  responses:
+    Unauthorized:
+      description: Missing, invalid, revoked, or inactive API key.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            ok: false
+            error: Missing or invalid API key.
+            request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+    Forbidden:
+      description: The key is valid and does not include the required scope.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            ok: false
+            error: API key does not include the required scope.
+            request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+    NotFound:
+      description: No order with this partner order number is visible to the authenticated partner.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            ok: false
+            error: Order not found.
+            request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+    Conflict:
+      description: The partner order number or idempotency key was already used with a different payload, or a SKU is ambiguous.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            ok: false
+            error: This partner order number was already submitted with a different payload.
+            request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+    Unprocessable:
+      description: Validation failed, the account reference is unknown, a SKU is inactive, or inventory is short.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            invalidAddress:
+              value:
+                ok: false
+                error: The order payload is invalid.
+                request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+                details:
+                  - path: billing_address.line1
+                    message: Too small
+            insufficientInventory:
+              value:
+                ok: false
+                error: Insufficient inventory for one or more lines.
+                request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+                details:
+                  limitation: Insufficient inventory is rejected. Confirmed partner orders are not held for backorder, and no inventory is decremented until staff lock the confirmed order.
+                  lines:
+                    - sku: FIXTURE-SKU
+                      required: 2
+                      on_hand: 0
+    RateLimited:
+      description: More than 60 requests in the last minute for this partner.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            ok: false
+            error: Rate limit exceeded. Retry after a short wait.
+            request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+    ServerError:
+      description: Unexpected failure. Retry an identical request with the same Idempotency-Key.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            ok: false
+            error: The order could not be saved.
+            request_id: 4f3a0a2e-6a1b-4d2e-9c31-0d5a6e7b8c9d
+  schemas:
+    Address:
+      type: object
+      required: [line1, city, postal]
+      properties:
+        company:
+          type: string
+          nullable: true
+        attn:
+          type: string
+          nullable: true
+        line1:
+          type: string
+        line2:
+          type: string
+          nullable: true
+        city:
+          type: string
+        state:
+          type: string
+          nullable: true
+        postal:
+          type: string
+        country:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+    CreateOrderRequest:
+      type: object
+      required: [partner_order_number, partner_account_ref, billing_address, shipping_address, lines]
+      properties:
+        partner_order_number:
+          type: string
+          maxLength: 64
+          description: Immutable partner order number. Preserved exactly for later callbacks.
+        partner_account_ref:
+          type: string
+          maxLength: 128
+          description: External customer id, unique for this partner. An existing mapping is reused. A new account is created only when this partner has automatic account creation and an approved pricing policy, and the request includes customer.name.
+        customer:
+          type: object
+          description: Required only when this partner_account_ref is new and automatic account creation is enabled. Ignored when a mapping already exists; it does not rename the account or change its pricing.
+          properties:
+            name:
+              type: string
+              maxLength: 200
+            email:
+              type: string
+              format: email
+        contact:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+        billing_address:
+          $ref: "#/components/schemas/Address"
+        shipping_address:
+          $ref: "#/components/schemas/Address"
+        shipping_priority:
+          type: string
+          enum: [GROUND, THREE_DAY, TWO_DAY, TWO_DAY_AM, OVERNIGHT_AM, FIRST_OVERNIGHT, PRIORITY_OVERNIGHT]
+          default: GROUND
+        lines:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            required: [sku, quantity]
+            properties:
+              sku:
+                type: string
+                description: Verified partner SKU mapping, or an exact active product_variants.sku when that partner allows direct matching. Names are never used to choose a product.
+              quantity:
+                type: integer
+                minimum: 1
+              product_name:
+                type: string
+                description: Stored for administrators. Not used to match a product.
+              manufacturer:
+                type: string
+              size:
+                type: string
+              width_cm:
+                type: number
+              length_cm:
+                type: number
+              unit_of_sale:
+                type: string
+                description: Must be Units when supplied. 360 sells these catalog lines by the unit.
+    OrderLine:
+      type: object
+      required: [sku, product_variant_id, quantity, unit_price, discount_percent, line_total]
+      properties:
+        sku:
+          type: string
+          description: 360 catalog SKU stored on the order. When a partner mapping was used, this is the internal SKU, not the external SKU that was submitted.
+        product_variant_id:
+          type: string
+          format: uuid
+        quantity:
+          type: number
+        unit_price:
+          type: number
+        discount_percent:
+          type: number
+        line_total:
+          type: number
+    Order:
+      type: object
+      required: [id, order_number, partner_order_number, status, currency, subtotal, shipping_total, total, lines]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Internal 360 order id.
+        order_number:
+          type: string
+          description: Generated 360 order number. Do not send this back as the partner order number.
+        partner_order_number:
+          type: string
+        status:
+          type: string
+          example: CONFIRMED
+        currency:
+          type: string
+          example: USD
+        subtotal:
+          type: number
+        shipping_total:
+          type: number
+          description: Zero at intake. Freight can be added later by 360 staff.
+        total:
+          type: number
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderLine"
+    OrderResponse:
+      type: object
+      required: [ok, request_id, order]
+      properties:
+        ok:
+          type: boolean
+        idempotent_replay:
+          type: boolean
+        request_id:
+          type: string
+          format: uuid
+        order:
+          $ref: "#/components/schemas/Order"
+    Error:
+      type: object
+      required: [ok, error, request_id]
+      properties:
+        ok:
+          type: boolean
+          example: false
+        error:
+          type: string
+        request_id:
+          type: string
+          format: uuid
+        error_code:
+          type: string
+          description: Stable code such as unknown_account, customer_name_required, pricing_not_approved, pricing_not_configured, unmapped_sku, unverified_mapping, disabled_mapping, inactive_product, unknown_sku, ambiguous_sku, product_metadata_conflict, unit_conflict, insufficient_inventory, or conflict.
+        details:
+          description: Field errors, SKU lines, or inventory lines. Secrets are never included. Present on order-submission failures. Validation and authentication responses use HTTP status and error.
+    InvoiceCallback:
+      type: object
+      required: [invoice_number, final_total, invoiced_at]
+      properties:
+        invoice_number:
+          type: string
+        final_total:
+          type: number
+          description: US dollars. Includes final freight. Matches the order total.
+        invoiced_at:
+          type: string
+          format: date-time
+    ShipmentCallback:
+      type: object
+      required: [tracking_number, ship_via, shipped_at]
+      properties:
+        tracking_number:
+          type: string
+        ship_via:
+          type: string
+          description: Carrier name stored on the fulfillment.
+        shipped_at:
+          type: string
+          format: date-time
+    PaymentLinkCallback:
+      type: object
+      required: [payment_link_url]
+      properties:
+        payment_link_url:
+          type: string
+          format: uri
+          description: HTTPS Stripe Checkout URL for the current outstanding balance.
+    PaymentReceiptCallback:
+      type: object
+      required: [amount, payment_date, payment_method, confirmation_code]
+      properties:
+        amount:
+          type: number
+          description: US dollars captured for this payment.
+        payment_date:
+          type: string
+          format: date
+          description: Calendar date, YYYY-MM-DD, matching Nimble staging.
+        payment_method:
+          type: string
+          enum: [credit_card, ach, wire]
+        confirmation_code:
+          type: string
+          description: Stripe charge id when present, otherwise the PaymentIntent id.

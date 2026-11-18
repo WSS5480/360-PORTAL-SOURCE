@@ -1,0 +1,15 @@
+{
+  "name": "direct_usage_allowed",
+  "note": "Observation with Dr. Pepper today. Open shoulder repair. The team used MiraMesh during the case and the implant opened cleanly. The scrub tech noted tray setup took extra time because the backup sizes were not ready. Follow up with Morgan to confirm the right sizes for the next case.",
+  "mustContain": [
+    "MiraMesh",
+    "was used during the case",
+    "Follow up with Morgan"
+  ],
+  "mustNotContain": [
+    "MiraMesh interest",
+    "MiraMesh evaluation",
+    "MiraMesh During",
+    "Staff workflow appeared positive"
+  ]
+}

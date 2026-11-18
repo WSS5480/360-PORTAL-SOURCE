@@ -1,0 +1,14 @@
+{
+  "name": "interest_not_evaluation",
+  "note": "Intro call with Dr. Tomato. Discussed FlexiScope briefly. He asked how FlexiScope compares with their current rigid suction setup and said he was interested in learning more. He was not ready to evaluate anything from a phone call. Best next step is to observe a robotic case and send compatibility information.",
+  "mustContain": [
+    "Product interest: Flexiscope",
+    "Observe a robotic case",
+    "Send compatibility information"
+  ],
+  "mustNotContain": [
+    "FlexiScope evaluated",
+    "FlexiScope was used",
+    "evaluated during procedure"
+  ]
+}

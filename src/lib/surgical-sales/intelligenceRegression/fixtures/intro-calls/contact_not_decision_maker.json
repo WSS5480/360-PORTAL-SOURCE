@@ -1,0 +1,13 @@
+{
+  "name": "contact_not_decision_maker",
+  "note": "Intro call with Dr. Onion. Jennifer is the scheduling coordinator and helps find open observation dates. She can point us to the right office contact for credentialing, but no one identified her as the decision maker. Next step is to coordinate observation access through Jennifer.",
+  "mustContain": [
+    "Jennifer",
+    "Coordinate observation access through Jennifer"
+  ],
+  "mustNotContain": [
+    "Jennifer decision maker",
+    "Jennifer is the decision maker",
+    "Jennifer — Decision Maker"
+  ]
+}
