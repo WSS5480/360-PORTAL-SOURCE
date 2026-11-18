@@ -31,6 +31,7 @@ A Next.js 16 + Supabase app ("360 Portal": customer ordering, invoices, IVR, sal
 
 ## Change log
 - 2026-11-17 — First deploy setup: unzipped source on branch `render`, Render start-up bootstrap, this file.
+- 2026-11-17 — Render build ran out of memory in the TypeScript step: next.config.ts skips the type check during `next build` (`typescript.ignoreBuildErrors`); NODE_OPTIONS raises the build heap.
 
 ## Decisions (date — decision — why)
 - 2026-11-17 — Its own Supabase project and its own Render service in 360 MEDICAL, kept separate. Steve: "put in
